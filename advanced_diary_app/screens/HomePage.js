@@ -23,7 +23,7 @@ export default function HomePage() {
   console.log("Entree dans HomePage");
   const { height, width, moderateScale, verticalScale, horizontalScale } = useResponsiveContext();
   const isLandscape = width > height
-  const { session, user, notes } = useSupabaseSession();
+  const { session, user, notes, percentages } = useSupabaseSession();
   const [modalCeationNoteVisible, setModalCeationNoteVisible] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
 
@@ -32,6 +32,7 @@ export default function HomePage() {
   const avatarUrl = getAvatarUrl(user);
 
   console.log('Notes recupérée depuis HomePage : ', notes);
+  console.log("Percentages recupérés depuis HomePage : ", percentages);
 
   const styles = StyleSheet.create({
     container: {
@@ -73,29 +74,29 @@ export default function HomePage() {
     mainList: {
       flex: 1,
       margin: isLandscape? moderateScale(5) : moderateScale(15),
-      backgroundColor: 'rgba(3, 3, 3, 0.4)',
-      gap: 6,
+      backgroundColor: 'rgba(3, 3, 3, 0.7)',
       borderRadius: 15,
     },
     list: {
       flex: 1,
+      // backgroundColor: 'black'
     },
     emptyMainList: {
-      flex: 2,
+      flex: 1,
       justifyContent: 'space-evenly',
       alignItems: 'center',
     },
     listTitle: {
       color: "#f3e7bb",
       textAlign: 'center',
-      margin: isLandscape? moderateScale(8) : moderateScale(20),
+      // margin: isLandscape? moderateScale(8) : moderateScale(20),
       fontWeight: 'bold',
-      fontSize: moderateScale(14),
+      fontSize: isLandscape? moderateScale(8) : moderateScale(14),
     },
     listItem: {
       backgroundColor: "#0e6f03c5",
-      height: isLandscape? moderateScale(40) : moderateScale(70),
-      margin: isLandscape? moderateScale(8) : moderateScale(20),
+      height: isLandscape? moderateScale(30) : moderateScale(60),
+      margin: isLandscape? moderateScale(8) : moderateScale(14),
       borderRadius: 15,
       flexDirection: 'row',
       justifyContent: 'center',
@@ -104,14 +105,30 @@ export default function HomePage() {
     },
     titleItem: {
       color: "#f3e7bb",
-      width: "50%",
+      width: "35%",
       borderRightWidth: moderateScale(2),
       borderRightColor: "#f3e7bb",
       padding: isLandscape? moderateScale(6) : moderateScale(14),
     },
+    percentageItem: {
+      flex: 1,
+      flexDirection: isLandscape ? 'row' : 'row',
+    },
+    percentageIcon: {
+      marginVertical:isLandscape ? moderateScale(2) : moderateScale(2),
+      width: '50%',
+      textAlign: 'center'
+    },
+    percentageText: {
+      marginVertical:isLandscape ? moderateScale(2) : moderateScale(2),
+      width: '50%',
+      color: "#f3e7bb",
+      fontSize: isLandscape ? moderateScale(8) : moderateScale(18),
+      textAlign: 'center',
+    },
     footer: {
       height: isLandscape? height * 0.1 : height * 0.06,
-      margin: moderateScale(4),
+      margin: isLandscape? moderateScale(0) : moderateScale(4),
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
@@ -121,13 +138,13 @@ export default function HomePage() {
     },
     buttonCreate: {
       backgroundColor: "#1a1818",
-      paddingVertical: isLandscape? moderateScale(4) : moderateScale(10),
-      paddingHorizontal: isLandscape? moderateScale(10) : moderateScale(20),
+      paddingVertical: isLandscape? moderateScale(3) : moderateScale(10),
+      paddingHorizontal: isLandscape? moderateScale(14) : moderateScale(20),
       borderRadius: 50,
     },
     textButtonCreate: {
       color: "#2dc61c",
-      fontSize: isLandscape? moderateScale(10) : moderateScale(14),
+      fontSize: isLandscape? moderateScale(9) : moderateScale(14),
     },
   });
 
@@ -151,7 +168,7 @@ export default function HomePage() {
         </View>
         <View style={styles.listContainer}>
           <View style={styles.mainList}>
-            <Text style={styles.listTitle}>Your diary entries</Text>
+            <Text style={styles.listTitle}>Your last diary entries</Text>
             <FlatList
             style={styles.list}
             data={notes} // la source de données
@@ -161,6 +178,7 @@ export default function HomePage() {
                 onPress={() => setSelectedNote(item)}
                 style={styles.listItem}
                 >
+                  <Text style={styles.titleItem}>{new Date(item.created_at).toLocaleDateString()}</Text>
                   <Text style={styles.titleItem}>{item.title}</Text>
                   <FontAwesome5 name={FEELINGS[item.icon] ?? "question"} size={moderateScale(20)} color={item.icon.toLowerCase().includes("sad") ? "#de7c1b" : "#2dc61c"}></FontAwesome5>
                 </Pressable>
@@ -169,14 +187,46 @@ export default function HomePage() {
               ItemSeparatorComponent={() => <View style={{ height: isLandscape? moderateScale(2) : moderateScale(6)}} />} 
               ListEmptyComponent={
                 <View style={styles.emptyMainList}>
-                  <Text style={{color: "#f3e7bb", fontSize: isLandscape ? moderateScale(16) : moderateScale(24), textAlign: 'center'}}>Looks like you don't have any entry yet.</Text>
-                  <FontAwesome5 name={FEELINGS["Very sad"]} size={isLandscape? moderateScale(40) : moderateScale(50)} color={"#de7c1b"}></FontAwesome5>
+                  <Text style={{color: "#f3e7bb", fontSize: isLandscape ? moderateScale(8) : moderateScale(18), textAlign: 'center'}}>Looks like you don't have any entry yet.</Text>
+                  <FontAwesome5 name={FEELINGS["Very sad"]} size={isLandscape? moderateScale(20) : moderateScale(40)} color={"#de7c1b"}></FontAwesome5>
                 </View>
               }
               
             />
 
           </View>
+        </View>
+        <View style={styles.listContainer}>
+              <View style={styles.mainList}>
+                <Text style={styles.listTitle}>
+                  {notes.length === 0 ? "Create entry to see your feel percentages" : notes.length === 1 ? `Your feel for your only entry` :  `Your feel for your ${notes.length} entries`}
+                </Text>
+                {notes.length > 0 ? 
+                <View style={styles.list}>
+                  <FlatList 
+                    style={[styles.list]}
+                    data={percentages}
+                    keyExtractor={(item) => item[0]}
+                    renderItem={({item}) => {
+                      const feeling = item[0];
+                      const percentage = item[1];
+                      
+                      return (
+                        <View style={[styles.percentageItem,]}>
+                          <FontAwesome5 name={FEELINGS[feeling]} style={styles.percentageIcon} size={isLandscape? moderateScale(14) : moderateScale(24)} color={feeling.toLowerCase().includes("sad") ? "#de7c1b" : "#2dc61c"}></FontAwesome5>
+                          <Text style={styles.percentageText}>{percentage}%</Text>
+                        </View>
+                      );
+                    }}
+                    ItemSeparatorComponent={() => <View style={{ flex: 1, height: isLandscape? moderateScale(4) : moderateScale(12)}} />} 
+                  />
+                </View> 
+                : 
+                <View style={[styles.list, {justifyContent: 'center'}]}>
+                  <Text style={{color: "#f3e7bb", fontSize: isLandscape ? moderateScale(8) : moderateScale(14), textAlign: 'center'}}>No percentages available</Text>
+                </View> 
+                }
+              </View>
         </View>
         <View style={styles.footer}>
           <TouchableOpacity onPress={() => setModalCeationNoteVisible(true)} style={styles.buttonCreate}>

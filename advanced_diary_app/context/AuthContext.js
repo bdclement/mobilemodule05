@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { AppState, Linking, Platform } from 'react-native';
 import { supabase } from '../utils/supabaseClient';
+import { computePercentages } from '../utils/utils';
 
 const SessionContext = createContext();
 
@@ -50,19 +51,26 @@ const handleDeepLink = async (event) => {
 };
 
 const fetchNotes = async (user, setNotes) => {
-  if (!user) return;
+  if (!user) return [];
   const { data, error } = await supabase
     .from('Notes')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', {ascending: false});
-    if (!error) setNotes(data);
-    else console.log('Error Fecthing Notes', error);
+    if (!error) {
+      setNotes(data);
+      return data;
+    }
+    else {
+      console.log('Error Fecthing Notes', error);
+      return [];
+    }
 };
 
 export const SessionProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [notes, setNotes] = useState([]);
+  const [percentages, setPercentages] = useState([]);
 
   console.log("SessionProvider rendu !");
 
@@ -75,6 +83,8 @@ export const SessionProvider = ({ children }) => {
       (_event, session) => {
         console.log("Auth state changed : ", _event);//session
         setSession(session);
+        // setPercentages(null);
+        // percentages
       }
     );
     
@@ -106,7 +116,9 @@ export const SessionProvider = ({ children }) => {
     }
 
     console.log('Durant useEffect');
-    fetchNotes(user, setNotes);
+    fetchNotes(user, setNotes).then((data) => {
+      setPercentages(computePercentages(data));
+    });
     console.log(`UseState Session provider avec user ${user?.id ?? "null"}, fetchNotes : `, notes);
     
     // Listenner sur la db 
@@ -123,7 +135,12 @@ export const SessionProvider = ({ children }) => {
         payload => {
           console.log('Changement sur la table Notes reçu : ', payload)
           // Recharge toute la liste (pas très opti mais suffisant pour notre utilisation)
-          fetchNotes(user, setNotes);
+          // fetchNotes(user, setNotes);
+          // percentages
+          fetchNotes(user, setNotes).then((data) => {
+            setPercentages(computePercentages(data));
+            // console.log(computePercentages(data));
+          });
         }
       )
       .subscribe();
@@ -134,7 +151,7 @@ export const SessionProvider = ({ children }) => {
       }
   }, [user]);
 
-  return <SessionContext.Provider value={{session, user, notes}}>
+  return <SessionContext.Provider value={{session, user, notes, percentages}}>
     {children}
   </SessionContext.Provider>;
 }

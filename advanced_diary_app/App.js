@@ -30,6 +30,4 @@ const styles = StyleSheet.create({
 
 //  A faire :
         // Bouton pour voir le calendrier avec les notes pour chaque jour ? (Day 5)
-        // total number of entries display (Day 5)
-        // List les % de feeling (Day 5)
-  // tester en mode web + autre pour avoir les responsivites
+  // Gros point responsivite !!!!
