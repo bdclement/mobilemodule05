@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Alert, Text, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { supabase } from '../utils/supabaseClient';
 import { useResponsiveContext } from "../context/ResponsiveContext";
@@ -50,23 +50,26 @@ export default function NoteCreationForm({ userId, onClose }) {
   
     const styles = StyleSheet.create({
       container: {
-        marginVertical: moderateScale(6),
+        marginVertical: isLandscape? moderateScale(0) : moderateScale(6),
+        maxHeight: isLandscape? height * 0.8 : height * 0.7,
       },
       title: {
         textAlign: 'center',
-        marginVertical: moderateScale(10),
+        marginVertical: isLandscape? moderateScale(0) :  moderateScale(10),
         fontStyle: 'italic'
       },
       input: {
         borderWidth: 1,
         borderColor: '#1a1818',
         borderRadius: moderateScale(10),
-        padding: 8,
+        padding:  isLandscape? moderateScale(4) : moderateScale(8),
         marginVertical: 8,
         color: 'black',
       },
       inputPicker: {
-        marginVertical: moderateScale(10),
+        marginVertical: isLandscape? moderateScale(0) : moderateScale(10),
+        height: isLandscape ? moderateScale(90) : moderateScale(150),
+        transform: isLandscape ? [{ scaleY: 0.9 }] : [],
       },
       button: {
         color: "#2dc61c"
@@ -74,33 +77,38 @@ export default function NoteCreationForm({ userId, onClose }) {
     });
 
   return (
-    <View style={styles.container}>
-        <Text style={styles.title}>Fill form to create your new entry</Text>
-        <TextInput
-          placeholder="Title of your note"
-          placeholderTextColor="#c6c3c3"
-          value={title}
-          onChangeText={setTitle}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Explain how you feel"
-          placeholderTextColor="#c6c3c3"
-          value={feeling}
-          onChangeText={setFeeling}
-          style={styles.input}
-        />
-        <Text style={styles.title}>Choose feeling :</Text>
-        <Picker
-            selectedValue={icon}
-            onValueChange={(itemValue) => setIcon(itemValue)}
-            style={styles.inputPicker}
-        >
-            {FEELINGS_OPTIONS.map((f) => (
-              <Picker.Item key={f} label={f} value={f}/>
-            ))}
-        </Picker>
-        <Button title={loading ? "Creating..." : "Create"} onPress={handleSubmit} disabled={loading} color="#2dc61c"/>
-    </View>
+    <ScrollView
+    contentContainerStyle={{paddingBottom: moderateScale(10)}}
+    showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.container}>
+          <Text style={styles.title}>Fill form to create your new entry</Text>
+          <TextInput
+            placeholder="Title of your note"
+            placeholderTextColor="#c6c3c3"
+            value={title}
+            onChangeText={setTitle}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Explain how you feel"
+            placeholderTextColor="#c6c3c3"
+            value={feeling}
+            onChangeText={setFeeling}
+            style={styles.input}
+          />
+          <Text style={styles.title}>Choose feeling :</Text>
+          <Picker
+              selectedValue={icon}
+              onValueChange={(itemValue) => setIcon(itemValue)}
+              style={styles.inputPicker}
+          >
+              {FEELINGS_OPTIONS.map((f) => (
+                <Picker.Item key={f} label={f} value={f}/>
+              ))}
+          </Picker>
+          <Button title={loading ? "Creating..." : "Create"} onPress={handleSubmit} disabled={loading} color="#2dc61c"/>
+      </View>
+    </ScrollView>
   );
 }

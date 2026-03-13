@@ -73,13 +73,13 @@ export default function HomePage() {
     },
     mainList: {
       flex: 1,
-      margin: isLandscape? moderateScale(5) : moderateScale(15),
+      margin: isLandscape? moderateScale(4) : moderateScale(15),
       backgroundColor: 'rgba(3, 3, 3, 0.7)',
       borderRadius: 15,
     },
     list: {
       flex: 1,
-      // backgroundColor: 'black'
+      flexDirection: isLandscape? 'row' : 'column',
     },
     emptyMainList: {
       flex: 1,
@@ -89,30 +89,32 @@ export default function HomePage() {
     listTitle: {
       color: "#f3e7bb",
       textAlign: 'center',
-      // margin: isLandscape? moderateScale(8) : moderateScale(20),
+      margin: isLandscape? moderateScale(0) : moderateScale(2),
       fontWeight: 'bold',
       fontSize: isLandscape? moderateScale(8) : moderateScale(14),
     },
     listItem: {
       backgroundColor: "#0e6f03c5",
-      height: isLandscape? moderateScale(30) : moderateScale(60),
-      margin: isLandscape? moderateScale(8) : moderateScale(14),
+      height: isLandscape? moderateScale(16) : moderateScale(60),
+      marginHorizontal: isLandscape? moderateScale(22) : moderateScale(10),
+      marginVertical: isLandscape? moderateScale(1) : moderateScale(12),
       borderRadius: 15,
       flexDirection: 'row',
-      justifyContent: 'center',
+      justifyContent: isLandscape ? 'center' : '',
       alignItems: 'center',
       gap: isLandscape? moderateScale(8) : moderateScale(20),
     },
     titleItem: {
       color: "#f3e7bb",
       width: "35%",
-      borderRightWidth: moderateScale(2),
+      borderRightWidth: isLandscape? moderateScale(1) : moderateScale(2),
       borderRightColor: "#f3e7bb",
-      padding: isLandscape? moderateScale(6) : moderateScale(14),
+      padding: isLandscape? moderateScale(2) : moderateScale(14),
+      flexDirection: isLandscape ? 'row' : 'column'
     },
     percentageItem: {
       flex: 1,
-      flexDirection: isLandscape ? 'row' : 'row',
+      flexDirection: 'row',
     },
     percentageIcon: {
       marginVertical:isLandscape ? moderateScale(2) : moderateScale(2),
@@ -124,7 +126,7 @@ export default function HomePage() {
       width: '50%',
       color: "#f3e7bb",
       fontSize: isLandscape ? moderateScale(8) : moderateScale(18),
-      textAlign: 'center',
+      textAlign: isLandscape? 'left' : 'center',
     },
     footer: {
       height: isLandscape? height * 0.1 : height * 0.06,
@@ -171,7 +173,7 @@ export default function HomePage() {
             <Text style={styles.listTitle}>Your last diary entries</Text>
             <FlatList
             style={styles.list}
-            data={notes} // la source de données
+            data={notes.slice(0, 2)} // la source de données
             keyExtractor={(item) => item.id} // clé unique par item
             renderItem={({ item }) => (
                 <Pressable 
@@ -179,16 +181,16 @@ export default function HomePage() {
                 style={styles.listItem}
                 >
                   <Text style={styles.titleItem}>{new Date(item.created_at).toLocaleDateString()}</Text>
-                  <Text style={styles.titleItem}>{item.title}</Text>
-                  <FontAwesome5 name={FEELINGS[item.icon] ?? "question"} size={moderateScale(20)} color={item.icon.toLowerCase().includes("sad") ? "#de7c1b" : "#2dc61c"}></FontAwesome5>
+                  <Text style={styles.titleItem} numberOfLines={1}>{item.title}</Text>
+                  <FontAwesome5 name={FEELINGS[item.icon] ?? "question"} size={isLandscape? moderateScale(12) : moderateScale(20)} color={item.icon.toLowerCase().includes("sad") ? "#de7c1b" : "#2dc61c"}></FontAwesome5>
                 </Pressable>
               )}
               contentContainerStyle={[styles.listContent, { flexGrow: 1 }]} // style du container interne
-              ItemSeparatorComponent={() => <View style={{ height: isLandscape? moderateScale(2) : moderateScale(6)}} />} 
+              ItemSeparatorComponent={() => <View style={{ height: isLandscape? moderateScale(1) : moderateScale(6)}} />} 
               ListEmptyComponent={
                 <View style={styles.emptyMainList}>
                   <Text style={{color: "#f3e7bb", fontSize: isLandscape ? moderateScale(8) : moderateScale(18), textAlign: 'center'}}>Looks like you don't have any entry yet.</Text>
-                  <FontAwesome5 name={FEELINGS["Very sad"]} size={isLandscape? moderateScale(20) : moderateScale(40)} color={"#de7c1b"}></FontAwesome5>
+                  <FontAwesome5 name={FEELINGS["Very sad"]} size={isLandscape? moderateScale(12) : moderateScale(40)} color={"#de7c1b"}></FontAwesome5>
                 </View>
               }
               
@@ -204,9 +206,12 @@ export default function HomePage() {
                 {notes.length > 0 ? 
                 <View style={styles.list}>
                   <FlatList 
+                  contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-evenly' }}
                     style={[styles.list]}
                     data={percentages}
                     keyExtractor={(item) => item[0]}
+                    numColumns={isLandscape ? percentages.length : 1}
+                    key={isLandscape ? 'landscape' : 'portrait'}  
                     renderItem={({item}) => {
                       const feeling = item[0];
                       const percentage = item[1];
@@ -218,7 +223,7 @@ export default function HomePage() {
                         </View>
                       );
                     }}
-                    ItemSeparatorComponent={() => <View style={{ flex: 1, height: isLandscape? moderateScale(4) : moderateScale(12)}} />} 
+                    ItemSeparatorComponent={() => <View style={{ flex: 1, height: isLandscape? moderateScale(1) : moderateScale(12)}} />} 
                   />
                 </View> 
                 : 

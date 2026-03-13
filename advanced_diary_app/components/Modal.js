@@ -18,22 +18,22 @@ export default function ModalToFill({ visible, onClose, children }) {
         width: isLandscape? '75%' : '90%',
         backgroundColor: "#0e6f03c5",
         borderRadius: moderateScale(15),
-        paddingHorizontal: moderateScale(20),
-        paddingVertical: moderateScale(12),
+        paddingHorizontal: isLandscape ? moderateScale(12) : moderateScale(20),
+        paddingVertical: isLandscape ? moderateScale(8) : moderateScale(12),
         borderWidth: moderateScale(1),
       },
       closeButton: {
-        marginBottom: moderateScale(6),
+        marginBottom: isLandscape? moderateScale(2) :moderateScale(6),
         alignSelf: 'flex-end',
-        paddingHorizontal: moderateScale(12),
-        paddingVertical: moderateScale(6),
+        paddingHorizontal: isLandscape? moderateScale(8) : moderateScale(12),
+        paddingVertical: isLandscape? moderateScale(4) : moderateScale(6),
         backgroundColor: '#1a1818',
         borderRadius: moderateScale(10),
       },
     });
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent animationType="slide" supportedOrientations={['portrait', 'landscape']}>
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>

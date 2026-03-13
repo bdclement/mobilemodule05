@@ -30,4 +30,8 @@ const styles = StyleSheet.create({
 
 //  A faire :
         // Bouton pour voir le calendrier avec les notes pour chaque jour ? (Day 5)
-  // Gros point responsivite !!!!
+          // Faire le markDates
+          // Changeemnt de backgorundColor
+          // Logique au clique
+          // Faire que la liste soit visible ou non
+          // Selectionner date actuelle

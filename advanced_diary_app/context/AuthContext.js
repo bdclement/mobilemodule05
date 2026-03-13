@@ -84,7 +84,6 @@ export const SessionProvider = ({ children }) => {
         console.log("Auth state changed : ", _event);//session
         setSession(session);
         // setPercentages(null);
-        // percentages
       }
     );
     
@@ -135,11 +134,8 @@ export const SessionProvider = ({ children }) => {
         payload => {
           console.log('Changement sur la table Notes reçu : ', payload)
           // Recharge toute la liste (pas très opti mais suffisant pour notre utilisation)
-          // fetchNotes(user, setNotes);
-          // percentages
           fetchNotes(user, setNotes).then((data) => {
             setPercentages(computePercentages(data));
-            // console.log(computePercentages(data));
           });
         }
       )
