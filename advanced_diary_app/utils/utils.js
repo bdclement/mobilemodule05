@@ -46,3 +46,29 @@ export function computePercentages(notes) {
   console.log("Test in computePercentages", counts);
   return Object.keys(FEELINGS).map(f => [ f, Math.round(((counts[f] || 0) / total) * 100)])
 };
+
+export const formatLocalDate = (iso) => {
+  const d = new Date(iso);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
+
+export const formatDatePartsEn = (iso) => {
+  const date = new Date(iso);
+
+  const day = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+  }).format(date);
+
+  const month = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+  }).format(date);
+
+  const year = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+  }).format(date);
+
+  return { day, month, year };
+};
