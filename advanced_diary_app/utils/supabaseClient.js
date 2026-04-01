@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-console.log("Test supabase == ", SUPABASE_URL);
+// console.log("Test supabase == ", SUPABASE_URL);
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_API_KEY, {
     auth: {

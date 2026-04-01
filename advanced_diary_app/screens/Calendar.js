@@ -83,7 +83,7 @@ export default function CalendarScreen() {
         <SafeAreaView style={styles.container}>
             <Calendar
                 onDayPress={day => {
-                    console.log("Day press : ", day);
+                    // console.log("Day press : ", day);
                     setSelectedDate(day.dateString);
                 }}
                 markedDates={{

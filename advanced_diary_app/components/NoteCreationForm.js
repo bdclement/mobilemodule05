@@ -43,7 +43,7 @@ export default function NoteCreationForm({ userId, onClose }) {
           console.log("Alert envoye Car error :", error.message);
         } else {
           Alert.alert('Success', 'Note created !');
-          console.log("Alerte envoyé car OK");
+          // console.log("Alerte envoyé car OK");
           onClose();
         }
       };

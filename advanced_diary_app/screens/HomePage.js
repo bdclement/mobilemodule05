@@ -20,7 +20,7 @@ const handleLogout = async () => {
 };
 
 export default function HomePage() {
-  console.log("Entree dans HomePage");
+  // console.log("Entree dans HomePage");
   const { height, width, moderateScale, verticalScale, horizontalScale } = useResponsiveContext();
   const isLandscape = width > height
   const { session, user, notes, percentages } = useSupabaseSession();

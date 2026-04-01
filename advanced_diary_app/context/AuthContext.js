@@ -107,14 +107,12 @@ export const SessionProvider = ({ children }) => {
   const user = session?.user ?? null;
 
   // Notes Logic
-  console.log('Before useEffect');
   useEffect(() => {
     if (!user) {
       setNotes([]);
       return;
     }
 
-    console.log('Durant useEffect');
     fetchNotes(user, setNotes).then((data) => {
       setPercentages(computePercentages(data));
     });

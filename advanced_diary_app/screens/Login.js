@@ -13,7 +13,7 @@ const redirectUri = AuthSession.makeRedirectUri({
   scheme: "diary",
   useProxy: false
 });
-console.log('Test affichage redirect', redirectUri);
+// console.log('Test affichage redirect', redirectUri);
 
 const handleLogin = async (provider) => {
   console.log('Appel a handleLogin with provider : ', provider);
@@ -31,28 +31,13 @@ const handleLogin = async (provider) => {
   }
   console.log('No error, url OK : ', data.url);
   await Linking.openURL(data.url);
-  // MANIERE NATIVE AVEC DEV BUILD
-  // const result = await AuthSession.startAsync({authUrl : data.url});
-  // if (result?.type === 'success') {
-  //   console.log("Connexion reussie");
-  //   // Supabase gere le token et la session cote client
-  //   // supabase.auth.getSession() //est maintenant utilisable
-  //   const {data: sessionData} = await supabase.auth.getSession();
-  //   console.log("Session : ", sessionData);  
-  // } else {
-  //   console.log("Connexion error : ", result);
-  // }
-  console.log("Sortie de handleLogin");
 };
 
 export default function LoginPage() {
   const [showProviders, setShowProviders] = useState(false);
-  console.log("Entree dans LoginPage");
+  // console.log("Entree dans LoginPage");
   const { height, width, moderateScale } = useResponsiveContext();
   const isLandscape = width > height
-
-  // const { session, user } = useSupabaseSession();
-  // console.log("Session dans Login = ", session);
 
   const styles = StyleSheet.create({
     container: {
